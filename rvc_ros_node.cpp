@@ -74,17 +74,19 @@ bool tap(std_srvs::Empty::Request &req, std_srvs::Empty::Response &resp) {
 
 
 void publishPosition(const ros::TimerEvent &e) {
-  geometry_msgs::Point msg;
-  string str = ser->readline(128, "\n");
-  std::vector<string> results;
-  boost::split(results, str, [](char c){return c == '\t';});
-  
+  if(ser->available() > 0) {
+    geometry_msgs::Point msg;
+    string str = ser->readline(128, "\n");
+    std::vector<string> results;
+    boost::split(results, str, [](char c){return c == '\t';});
 
-  msg.x = std::stod(results[0]);
-  msg.y = std::stod(results[1]);
-  msg.z = 0;
 
-  pub.publish(msg);
+    msg.x = std::stod(results[0]);
+    msg.y = std::stod(results[1]);
+    msg.z = 0;
+
+    pub.publish(msg);
+  }
 }
 
 
@@ -92,7 +94,7 @@ int main(int argc, char **argv) {
   ros::init(argc, argv, "rvc_ros");
   ros::NodeHandle nh;
 
-  pub = nh.advertise<geometry_msgs::Point>("rvc_pose", 1000);
+  pub = nh.advertise<geometry_msgs::Point>("rvc_position", 1000);
 
   string port = "/dev/ttyUSB0";
 
@@ -111,7 +113,7 @@ int main(int argc, char **argv) {
   while(ser->available() == 0)
     ros::Duration(0.5).sleep();
 
-  ros::Timer position_timer = nh.createTimer(ros::Duration(0.05), &publishPosition);
+  ros::Timer position_timer = nh.createTimer(ros::Duration(0.2), &publishPosition);
   
   ros::ServiceServer move_serv = nh.advertiseService("move", &move);
   ros::ServiceServer move_to_serv = nh.advertiseService("move_to", &move_to);

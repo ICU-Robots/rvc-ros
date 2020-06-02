@@ -89,7 +89,7 @@ void publishPosition(const ros::TimerEvent &e) {
 
 
 int main(int argc, char **argv) {
-  ros::init(argc, argv, "rvc-ros");
+  ros::init(argc, argv, "rvc_ros");
   ros::NodeHandle nh;
 
   pub = nh.advertise<geometry_msgs::Point>("rvc_pose", 1000);

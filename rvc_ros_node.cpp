@@ -100,10 +100,10 @@ int main(int argc, char **argv) {
 
   ser = new serial::Serial(port, 19200, serial::Timeout::simpleTimeout(1000));
 
-  // if (ser->isOpen())
-    //   ROS_INFO("Opened serial port %s", port);
-  // else
-    //    ROS_FATAL("Failed to open serial port %s", port);
+  if (ser->isOpen())
+    ROS_INFO("Opened serial port %s", port);
+  else
+    ROS_FATAL("Failed to open serial port %s", port);
 
   ros::Duration(1).sleep();
 

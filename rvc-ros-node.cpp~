@@ -1,0 +1,41 @@
+#include <stdlib.h>
+#include <string>
+#include <ros/ros.h>
+#include <serial/serial.h>
+#include <geometry_msgs/Point.h>
+#include <std_srvs/Empty.h>
+
+
+using std::string;
+
+void move_serv
+
+
+int main(int argc, char **argv) {
+  ros::init(argc, argv, "rvc-ros");
+  ros::NodeHandle nh;
+
+  ros::Publisher pub - nh.advertise<geometry_msgs::Point>("rvc_pose", 1000);
+
+  char* port = "/dev/tty/USB0";
+
+  serial::Serial ser(port, 19200, serial::Timeout::simpleTimeout(1000));
+
+  if (ser.isOpen())
+    ROS_INFO("Opened serial port %s", port);
+  else
+    ROS_FATAL("Failed to open serial port %s", port);
+
+  ros::Duration(1).sleep();
+
+  serial.write("E");
+  serial.write("H");
+
+
+  ros::ServiceServer move_serv = nh.advertiseService("move", &move);
+  ros::ServiceServer move_to_serv = nh.advertiseService("move_to", &move_to);
+  ros::ServiceServer halt_serv = nh.advertiseService("halt", &halt);
+  ros::ServiceServer set_endeff_serv = nh.advertiseService("set_endeff", &set_endeff);
+  ros::ServiceServer set_led_serv = nh.adveriseService("set_led", &set_lef_serv);
+  ros::ServiceServer tap_serv = nh.advertiseService("tap", &tap);
+}

@@ -101,11 +101,11 @@ int main(int argc, char **argv) {
   ser = new serial::Serial(port, 19200, serial::Timeout::simpleTimeout(1000));
 
   if (ser->isOpen())
-    ROS_INFO("Opened serial port %s", port);
+    ROS_INFO("Opened serial port %s", port.c_string());
   else
-    ROS_FATAL("Failed to open serial port %s", port);
+    ROS_FATAL("Failed to open serial port %s", port.c_string());
 
-  ros::Duration(1).sleep();
+  ros::Duration(5).sleep();
 
   ser->write("E");
   ser->write("H");

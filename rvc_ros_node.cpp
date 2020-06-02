@@ -94,7 +94,7 @@ int main(int argc, char **argv) {
 
   pub = nh.advertise<geometry_msgs::Point>("rvc_pose", 1000);
 
-  string port = "/dev/tty/USB0";
+  string port = "/dev/ttyUSB0";
 
   ser = new serial::Serial(port, 19200, serial::Timeout::simpleTimeout(1000));
 

@@ -184,7 +184,7 @@ int main(int argc, char **argv) {
   ros::ServiceServer home_serv = nh.advertiseService("home", &home);
   ros::ServiceServer set_endeff_serv = nh.advertiseService("set_endeff", &set_endeff);
   ros::ServiceServer set_led_serv = nh.advertiseService("set_led", &set_led);
-  ros::ServiceServer set_motors_serv = nh.advertiseService("enable", &set_motors);
+  ros::ServiceServer set_motors_serv = nh.advertiseService("set_motors", &set_motors);
  
   
   // Release flow control to ROS

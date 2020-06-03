@@ -22,13 +22,13 @@ serial::Serial *ser;
 ros::Publisher pub;
 
 
-// Absolute movement subscriber callback
+// Relative movement subscriber callback
 void move(const sensor_msgs::JointState &msg) {
   ser->write(fmt::format("m {} {};", msg.position[0], msg.position[1]));
 }
 
 
-// Relative movement subscriber callback
+// Absolute movement subscriber callback
 void move_to(const sensor_msgs::JointState &msg) {
   ser->write(fmt::format("M {} {};", msg.position[0], msg.position[1]));
 }
@@ -137,6 +137,7 @@ int main(int argc, char **argv) {
   // Wait for device to ready
   ros::Duration(4).sleep();
 
+  ROS_INFO("Beginning homing sequence");
   // Enable motors and perform auto-home
   ser->write("E");
   ser->write("H");
@@ -144,15 +145,15 @@ int main(int argc, char **argv) {
   // Wait for homing to complete
   while(ser->available() == 0)
     ros::Duration(0.5).sleep();
-
+  ROS_INFO("Homing complete");
 
   // Define subscribers, publishers, and services
   ros::Timer position_timer = nh.createTimer(ros::Duration(0.2), &publishPosition);
 
   pub = nh.advertise<sensor_msgs::JointState>("setpoint_js", 1000);
   
-  ros::Subscriber move_sub = nh.subscribe("move_jp", 1000, &move);
-  ros::Subscriber move_to_sub = nh.subscribe("move_jr", 1000, &move_to);
+  ros::Subscriber move_sub = nh.subscribe("move_jr", 1000, &move);
+  ros::Subscriber move_to_sub = nh.subscribe("move_jp", 1000, &move_to);
   
   ros::ServiceServer halt_serv = nh.advertiseService("halt", &halt);
   ros::ServiceServer set_endeff_serv = nh.advertiseService("set_endeff", &set_endeff);

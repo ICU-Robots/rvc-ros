@@ -7,7 +7,7 @@ project(rvc_ros)
 ## Find catkin macros and libraries
 ## if COMPONENTS list like find_package(catkin REQUIRED COMPONENTS xyz)
 ## is used, also find other catkin packages
-find_package(catkin REQUIRED COMPONENTS serial roscpp geometry_msgs std_srvs message_generation)
+find_package(catkin REQUIRED COMPONENTS serial roscpp sensor_msgs std_srvs message_generation)
 find_package(fmt)
 
 ## System dependencies are found with CMake's conventions
@@ -51,11 +51,11 @@ find_package(fmt)
 # )
 
 ## Generate services in the 'srv' folder
-add_service_files(
-    FILES
-    MoveCommand.srv
-    SetCommand.srv
-)
+#add_service_files(
+#    FILES
+#    MoveCommand.srv
+#    SetCommand.srv
+#)
 
 ## Generate actions in the 'action' folder
 # add_action_files(
@@ -65,11 +65,11 @@ add_service_files(
 # )
 
 ## Generate added messages and services with any dependencies listed here
-generate_messages(
-    DEPENDENCIES
-    std_msgs
-    geometry_msgs  # Or other packages containing msgs
-)
+#generate_messages(
+#    DEPENDENCIES
+#    std_msgs
+#    sensor_msgs  # Or other packages containing msgs
+#)
 
 ################################################
 ## Declare ROS dynamic reconfigure parameters ##
@@ -103,7 +103,7 @@ generate_messages(
 catkin_package(
 #  INCLUDE_DIRS include
 #  LIBRARIES rvc-ros
-   CATKIN_DEPENDS message_runtime std_msgs geometry_msgs
+#   CATKIN_DEPENDS message_runtime std_msgs sensor_msgs
 #  DEPENDS system_lib
 )
 

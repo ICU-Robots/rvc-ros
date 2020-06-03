@@ -42,6 +42,22 @@ bool halt(std_srvs::Empty::Request &req, std_srvs::Empty::Response &resp) {
 }
 
 
+// End effector tap action service handler
+bool tap(std_srvs::Empty::Request &req, std_srvs::Empty::Response &resp) {
+  ser->write("T");
+
+  return true;
+}
+
+
+// Homing sequence service handler
+bool home(std_srvs::Empty::Request &req, std_srvs::Empty::Response &resp) {
+  ser->write("H");
+
+  return true;
+}
+
+
 // End effector state set service handler
 bool set_endeff(std_srvs::SetBool::Request &req, std_srvs::SetBool::Response &resp) {
   if (req.data) {
@@ -74,10 +90,18 @@ bool set_led(std_srvs::SetBool::Request &req, std_srvs::SetBool::Response &resp)
 }
 
 
-// End effector tap action service handler
-bool tap(std_srvs::Empty::Request &req, std_srvs::Empty::Response &resp) {
-  ser->write("T");
+// Motor state set service handler
+bool set_motors(std_srvs::SetBool::Request &req, std_srvs::SetBool::Response &resp) {
+  if (req.data) {
+    ser->write("E");
+    resp.message = "Motors Enabled";
+  } else {
+    ser->write("D");
+    resp.message = "Motors Disabled";
+  }
 
+  resp.success = true;
+  
   return true;
 }
 
@@ -156,10 +180,13 @@ int main(int argc, char **argv) {
   ros::Subscriber move_to_sub = nh.subscribe("move_jp", 1000, &move_to);
   
   ros::ServiceServer halt_serv = nh.advertiseService("halt", &halt);
+  ros::ServiceServer tap_serv = nh.advertiseService("tap", &tap);
+  ros::ServiceServer home_serv = nh.advertiseService("home", &home);
   ros::ServiceServer set_endeff_serv = nh.advertiseService("set_endeff", &set_endeff);
   ros::ServiceServer set_led_serv = nh.advertiseService("set_led", &set_led);
-  ros::ServiceServer tap_serv = nh.advertiseService("tap", &tap);
-
+  ros::ServiceServer set_motors_serv = nh.advertiseService("enable", &set_motors);
+ 
+  
   // Release flow control to ROS
   ros::spin();
   

@@ -57,10 +57,6 @@
   <exec_depend>std_msgs</exec_depend>
   <build_depend>std_srvs</build_depend>
   <exec_depend>std_srvs</exec_depend>
-  <build_depend>message_generation</build_depend>
-  <exec_depend>message_generation</exec_depend>
-  <build_depend>message_runtime</build_depend>
-  <exec_depend>message_runtime</exec_depend>
   <build_depend>serial</build_depend>
   <exec_depend>serial</exec_depend>
 

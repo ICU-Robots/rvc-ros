@@ -1,6 +1,7 @@
 // C/C++ Headers
 #include <stdlib.h>
 #include <string>
+#include <algorithm>
 
 // Utility library headers
 #include <boost/algorithm/string.hpp>
@@ -10,6 +11,7 @@
 // ROS Headers
 #include <ros/ros.h>
 #include <serial/serial.h>
+#include <std_msgs/Float32.h>
 #include <sensor_msgs/JointState.h>
 #include <std_srvs/Empty.h>
 #include <std_srvs/SetBool.h>
@@ -24,13 +26,20 @@ ros::Publisher pub;
 
 // Relative movement subscriber callback
 void move(const sensor_msgs::JointState &msg) {
-  ser->write(fmt::format("m {} {};", msg.position[0], msg.position[1]));
+  ser->write(fmt::format("m {0:.2f} {1:.2f};", msg.position[0], msg.position[1]));
 }
 
 
 // Absolute movement subscriber callback
 void move_to(const sensor_msgs::JointState &msg) {
-  ser->write(fmt::format("M {} {};", msg.position[0], msg.position[1]));
+  ser->write(fmt::format("M {0:.2f} {1:.2f};", msg.position[0], msg.position[1]));
+}
+
+
+// Scale maximum velocity of device callback
+void velocity_scale(const std_msgs::Float32 &msg) {
+  float scale = std::min(std::max(msg.data, 0.0f), 1.0f);
+  ser->write(fmt::format("V {0:.3f};", scale));
 }
 
 
@@ -132,6 +141,10 @@ void publishPosition(const ros::TimerEvent &e) {
     msg.position[0] = std::stod(results[0]);
     msg.position[1] = std::stod(results[1]);
 
+    msg.effort.resize(2);
+    msg.effort[0] = std::stod(results[2]);
+    msg.effort[1] = std::stod(results[3]);
+    
     // Publish and increment sequence counter
     pub.publish(msg);
     s++;
@@ -178,6 +191,7 @@ int main(int argc, char **argv) {
   
   ros::Subscriber move_sub = nh.subscribe("move_jr", 1000, &move);
   ros::Subscriber move_to_sub = nh.subscribe("move_jp", 1000, &move_to);
+  ros::Subscriber velocity_scale_sub = nh.subscribe("velocity_scale", 1000, &velocity_scale);
   
   ros::ServiceServer halt_serv = nh.advertiseService("halt", &halt);
   ros::ServiceServer tap_serv = nh.advertiseService("tap", &tap);

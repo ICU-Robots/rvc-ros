@@ -69,7 +69,7 @@ bool home(std_srvs::Trigger::Request &req, std_srvs::Trigger::Response &resp) {
 
   string str = ser->readline(128, "\n");
 
-  if (str == "T") {
+  if (str.find("T") >= 0) {
     resp.success = true;
     resp.message = "Successfully homed.";
   } else {

@@ -14,6 +14,7 @@
 #include <std_msgs/Float32.h>
 #include <sensor_msgs/JointState.h>
 #include <std_srvs/Empty.h>
+#include <std_srvs/Trigger.h>
 #include <std_srvs/SetBool.h>
 
 
@@ -60,8 +61,22 @@ bool tap(std_srvs::Empty::Request &req, std_srvs::Empty::Response &resp) {
 
 
 // Homing sequence service handler
-bool home(std_srvs::Empty::Request &req, std_srvs::Empty::Response &resp) {
+bool home(std_srvs::Trigger::Request &req, std_srvs::Trigger::Response &resp) {
   ser->write("H");
+
+  while(ser->available() == 0)
+    ros::Duration(0.5).sleep();
+
+  string str = ser->readline(128, "\n");
+
+  if (str == "T") {
+    resp.success = true;
+    resp.message = "Successfully homed.";
+  } else {
+    resp.success = false;
+    resp.message = "Failed to home.";
+  }
+  
 
   return true;
 }

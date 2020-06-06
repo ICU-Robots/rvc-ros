@@ -197,7 +197,8 @@ int main(int argc, char **argv) {
   // Wait for homing to complete
   while(ser->available() == 0)
     ros::Duration(0.5).sleep();
-  ser->readline(128, "\n");
+  string s = ser->readline(128, "\n");
+  ROS_INFO("%s", s.c_str());
   ROS_INFO("Homing complete");
 
   // Define subscribers, publishers, and services

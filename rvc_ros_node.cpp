@@ -22,7 +22,7 @@ using std::string;
 
 
 serial::Serial *ser;
-ros::Publisher pub;
+ros::Publisher pub_setpoint, pub_goal;
 
 
 // Relative movement subscriber callback
@@ -161,7 +161,11 @@ void publishPosition(const ros::TimerEvent &e) {
     msg.effort[1] = std::stod(results[3]);
     
     // Publish and increment sequence counter
-    pub.publish(msg);
+    pub_setpoint.publish(msg);
+    // Also publish to goal_js if message indicates end of motion 
+    if (results[4].find("F") >= 0) {
+      pub_goal.publish(msg);
+    }
     s++;
   }
 }
@@ -201,9 +205,10 @@ int main(int argc, char **argv) {
   ROS_INFO("Homing complete");
 
   // Define subscribers, publishers, and services
-  ros::Timer position_timer = nh.createTimer(ros::Duration(0.2), &publishPosition);
+  ros::Timer position_timer = nh.createTimer(ros::Duration(0.1), &publishPosition);
 
-  pub = nh.advertise<sensor_msgs::JointState>("setpoint_js", 1000);
+  pub_setpoint = nh.advertise<sensor_msgs::JointState>("setpoint_js", 1000);
+  pub_goal = nh.advertise<sensor_msgs::JointState>("goal_js", 1000);
   
   ros::Subscriber move_sub = nh.subscribe("move_jr", 1000, &move);
   ros::Subscriber move_to_sub = nh.subscribe("move_jp", 1000, &move_to);

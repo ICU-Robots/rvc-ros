@@ -163,7 +163,7 @@ void publishPosition(const ros::TimerEvent &e) {
     // Publish and increment sequence counter
     pub_setpoint.publish(msg);
     // Also publish to goal_js if message indicates end of motion 
-    if (results[4].find("F") >= 0) {
+    if (results[4].find("F") != string::npos) {
       pub_goal.publish(msg);
     }
     s++;

@@ -199,10 +199,18 @@ int main(int argc, char **argv) {
   ser->write("H");
 
   // Wait for homing to complete
-  while(ser->available() == 0)
-    ros::Duration(0.5).sleep();
-  string s = ser->readline(128, "\n");
-  ROS_INFO("Homing complete");
+  while(true) {
+    while(ser->available() == 0)
+      ros::Duration(0.5).sleep();
+    string s = ser->readline(128, "\n");
+    if (s.find("T") >= 0) {
+      ROS_INFO("Homing successful.");
+      break;
+    } else if (s.find("F") >= 0) {
+      ROS_INFO("Homing failed.");
+      break;
+    }
+  }
 
   // Define subscribers, publishers, and services
   ros::Timer position_timer = nh.createTimer(ros::Duration(0.1), &publishPosition);

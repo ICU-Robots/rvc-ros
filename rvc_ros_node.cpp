@@ -69,7 +69,7 @@ bool home(std_srvs::Trigger::Request &req, std_srvs::Trigger::Response &resp) {
 
   string str = ser->readline(128, "\n");
 
-  if (str.find("T") >= 0) {
+  if (str.find("T") != string::npos) {
     resp.success = true;
     resp.message = "Successfully homed.";
   } else {
@@ -203,11 +203,10 @@ int main(int argc, char **argv) {
     while(ser->available() == 0)
       ros::Duration(0.5).sleep();
     string s = ser->readline(128, "\n");
-    ROS_INFO("%s", s.c_str());
-    if (s.find("T") >= 0) {
+    if (s.find("T") != string::npos) {
       ROS_INFO("Homing successful.");
       break;
-    } else if (s.find("F") >= 0) {
+    } else if (s.find("F") != string::npos) {
       ROS_INFO("Homing failed.");
       break;
     }

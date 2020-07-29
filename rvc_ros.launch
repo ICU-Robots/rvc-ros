@@ -4,6 +4,8 @@
 	      name="rvc_ros_adapter"
 	      required="true"
 	      />
-	
+	<param name="rate" type="int" value="2" />
+	<param name="dwell" type="int" value="20" />
+	<include file="$(find raspicam_node)/launch/camerav2_1920x1440_10fps.launch"/>
 
 </launch>

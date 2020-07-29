@@ -23,7 +23,7 @@ using std::string;
 
 serial::Serial *ser;
 ros::Publisher pub_setpoint, pub_goal;
-
+int rate, dwell;
 
 // Relative movement subscriber callback
 void move(const sensor_msgs::JointState &msg) {
@@ -54,7 +54,7 @@ bool halt(std_srvs::Empty::Request &req, std_srvs::Empty::Response &resp) {
 
 // End effector tap action service handler
 bool tap(std_srvs::Empty::Request &req, std_srvs::Empty::Response &resp) {
-  ser->write("T");
+  ser->write(fmt::format("T {0:d} {1:d};", rate, dwell));
 
   return true;
 }
@@ -212,6 +212,9 @@ int main(int argc, char **argv) {
     }
   }
 
+  nh.getParam("rate", rate);
+  nh.getParam("dwell", dwell);
+  
   // Define subscribers, publishers, and services
   ros::Timer position_timer = nh.createTimer(ros::Duration(0.1), &publishPosition);
 
